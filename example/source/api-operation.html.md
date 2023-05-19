@@ -1,7 +1,7 @@
 ---
-title: API /Pets get
+title: API /Pets post
 ---
 
-# API operation /Pets get
+# API operation /Pets post
 
-api_operation> /pets get
+api_operation> /pets post

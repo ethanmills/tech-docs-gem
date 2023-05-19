@@ -15,6 +15,7 @@ module GovukTechDocs
         @template_schema = get_renderer("schema.html.erb")
         @template_operation = get_renderer("operation.html.erb")
         @template_parameters = get_renderer("parameters.html.erb")
+        @template_request_body = get_renderer("request_body.html.erb")
         @template_responses = get_renderer("responses.html.erb")
       end
 
@@ -105,6 +106,12 @@ module GovukTechDocs
         @template_parameters.result(binding)
       end
 
+      def request_body(operation, operation_id)
+        request_body = operation.request_body
+        id = "#{operation_id}-request-body"
+        @template_request_body.result(binding)
+      end
+
       def responses(operation, operation_id)
         responses = operation.responses
         id = "#{operation_id}-responses"
@@ -151,7 +158,14 @@ module GovukTechDocs
       end
 
       def schemas_from_operation(operation)
-        operation.responses.inject([]) do |memo, (_, response)|
+        schema_names = []
+
+        if operation.request_body&.content&.[]("application/json")
+          request_body_schema = operation.request_body.content["application/json"].schema
+          schema_names << request_body_schema.name
+          schema_names += schemas_from_schema(request_body_schema)
+        end
+        response_schema_names = operation.responses.inject([]) do |memo, (_, response)|
           next memo unless response.content["application/json"]
 
           schema = response.content["application/json"].schema
@@ -159,11 +173,13 @@ module GovukTechDocs
           memo << schema.name if schema.name
           memo + schemas_from_schema(schema)
         end
+        schema_names + response_schema_names
       end
 
       def add_operation(key, operation, path_id)
         id = "#{path_id}-#{key.parameterize}"
         parameters = parameters(operation, id)
+        request_body = request_body(operation, id)
         responses = responses(operation, id)
         @template_operation.result(binding)
       end
