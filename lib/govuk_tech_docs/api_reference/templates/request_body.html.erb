@@ -1,0 +1,33 @@
+<% if request_body&.any? %>
+  <h4 id="<%= id %>">Request Body</h4>
+  <table>
+    <thead>
+    <tr>
+      <th>Description</th>
+      <th>Schema</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>
+        <%= render_markdown(request_body.description) %>
+        <% if request_body.content['application/json'] %>
+          <% if request_body.content['application/json']["example"]
+               parsed_request_body = json_prettyprint(request_body.content['application/json']["example"])
+             else
+               parsed_request_body = json_output(request_body.content['application/json'].schema)
+             end %>
+          <% if parsed_request_body.present? %>
+            <pre><code><%= parsed_request_body %></code></pre>
+          <% end %>
+        <% end %>
+      </td>
+      <td>
+        <%= if request_body.content['application/json']
+              get_schema_link(request_body.content['application/json'].schema)
+            end %>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+<% end %>
