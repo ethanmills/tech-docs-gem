@@ -18,7 +18,7 @@ RSpec.describe "OpenAPI reference" do
 
     when_i_view_a_single_operation_api_reference_page
     then_there_is_correct_api_operation_content
-    then_there_is_correct_api_schema_content
+    then_there_is_correct_api_operation_schema_content
     then_there_is_not_extra_api_operation_content
 
     when_i_view_an_api_schema_reference_page
@@ -70,9 +70,18 @@ RSpec.describe "OpenAPI reference" do
 
   def then_there_is_correct_api_schema_content
     # Schema title
-    expect(page).to have_css("h3#schema-postpet", text: "PostPet")
+    expect(page).to have_css("h3#schema-pet", text: "Pet")
     # Schema parameters
     expect(page).to have_css("table", text: /\b(tag )\b/)
+    # Check that the "required" column is true for the `id` attribute
+    expect(page).to have_css("table.schema-pet td:nth(3)", text: "true")
+  end
+
+  def then_there_is_correct_api_operation_schema_content
+    # Schema title
+    expect(page).to have_css("h3#schema-postpet", text: "PostPet")
+    # Schema parameters
+    expect(page).to have_css("table", text: /\b(name )\b/)
     # Check that the "required" column is true for the `id` attribute
     expect(page).to have_css("table.schema-postpet td:nth(3)", text: "true")
   end
