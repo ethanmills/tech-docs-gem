@@ -70,18 +70,18 @@ RSpec.describe "OpenAPI reference" do
 
   def then_there_is_correct_api_schema_content
     # Schema title
-    expect(page).to have_css("h3#schema-pet", text: "Pet")
+    expect(page).to have_css("h3#schema-postpet", text: "PostPet")
     # Schema parameters
     expect(page).to have_css("table", text: /\b(tag )\b/)
     # Check that the "required" column is true for the `id` attribute
-    expect(page).to have_css("table.schema-pet td:nth(3)", text: "true")
+    expect(page).to have_css("table.schema-postpet td:nth(3)", text: "true")
   end
 
   def then_there_is_correct_api_operation_content
     # Operation title
-    expect(page).to have_css("h3#pets-get", text: "get")
+    expect(page).to have_css("h3#pets-post", text: "post")
     # Path parameters
-    expect(page).to have_css("table", text: /\b(How many items to return at one time)\b/)
+    expect(page).to have_css("table", text: /\b(Pet name)\b/)
     # Link to schema
     expect(page).to have_css('table a[href="#schema-error"]')
   end
@@ -90,7 +90,7 @@ RSpec.describe "OpenAPI reference" do
     # Path title
     expect(page).not_to have_css("h2#pets", text: "/pets")
     # Operation title
-    expect(page).not_to have_css("h3#pets-post", text: "post")
+    expect(page).not_to have_css("h3#pets-get", text: "get")
   end
 
   alias_method :then_there_is_not_api_path_content, :then_there_is_not_extra_api_operation_content
